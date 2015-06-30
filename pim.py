@@ -12,12 +12,24 @@ def print_items(list):
     for item in list:
         print '{} - {} ({}) : {}'.format(item[0], item[1], item[2], item[3])
 
+def format_timediff1(timediff):
+    hour = timediff.seconds // 3600
+    minute = (timediff.seconds - hour * 3600) // 60
+    return "{:0>2}:{:0>2}".format(hour, minute)
+
+def format_timediff2(timediff):
+    return "{} days".format(timediff.days)
+
+def format_timediff3(timediff):
+    return "started"
+
 ############################################################
 # Main
 ############################################################
 parser = ArgumentParser()
 parser.add_argument('-f', '--future', action = 'store_true', help = 'show future schedule')
 parser.add_argument('-b', '--backward', action = 'store_true', help = 'show backward schedule')
+parser.add_argument('-p', '--project', action = 'store_true', help = 'show project list')
 args = parser.parse_args()
 
 now = datetime.datetime.now()
@@ -43,21 +55,27 @@ for line in csv.reader(open(dir_script + '/sche.csv')):
     if(now_date <= datetime_sta.date() and 
             datetime_end.date() < tomo_date): # if today
         if(now < datetime_end): # not finished
-            list_today.append([datetime_sta.strftime(format_short),
-                datetime_end.strftime(format_short),
-                datetime_diff,
-                name])
+            if(datetime_sta <= now): # started yet
+                list_today.append([datetime_sta.strftime(format_short),
+                    datetime_end.strftime(format_short),
+                    format_timediff3(datetime_diff),
+                    name])
+            else: # not started
+                list_today.append([datetime_sta.strftime(format_short),
+                    datetime_end.strftime(format_short),
+                    format_timediff1(datetime_diff),
+                    name])
     # append "Future" list
     if(tomo_date <= datetime_sta.date()):
         list_future.append([datetime_sta.strftime(format_long),
             datetime_end.strftime(format_long),
-            datetime_diff,
+            format_timediff2(datetime_diff),
             name])
     # append "Past" list
-    if(datetime_end.date() < tomo_date):
+    if(datetime_end.date() < now_date):
         list_backward.append([datetime_sta.strftime(format_long),
             datetime_end.strftime(format_long),
-            datetime_diff,
+            format_timediff2(datetime_diff),
             name])
 
 has_opt = False
@@ -66,6 +84,10 @@ if(args.future):
     has_opt = True
 if(args.backward):
     print_items(list_backward)
+    has_opt = True
+if(args.project):
+    for line in csv.reader(open(dir_script + '/proj.csv')):
+        print "{} : {} ({})".format(line[0], line[1], line[2])
     has_opt = True
 if(not has_opt):
     print_items(list_today)
