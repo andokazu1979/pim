@@ -6,6 +6,18 @@ import os
 from argparse import ArgumentParser
 
 ############################################################
+# Color (ANSI escape sequence)
+############################################################
+PURPLE = '\033[95m'
+OKBLUE = '\033[94m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+RED = '\033[91m'
+ENDC = '\033[0m'
+BOLD = '\033[1m'
+UNDERLINE = '\033[4m'
+
+############################################################
 # Method
 ############################################################
 def print_items(list):
@@ -87,7 +99,12 @@ if(args.backward):
     has_opt = True
 if(args.project):
     for line in csv.reader(open(dir_script + '/proj.csv')):
-        print "{} : {} ({})".format(line[0], line[1], line[2])
+        if(line[2] == "PEND"):
+            print "{} : {} ({})".format(line[0], line[1], GREEN+line[2]+ENDC)
+        elif(line[2] == "RUN"):
+            print "{} : {} ({})".format(line[0], line[1], RED+line[2]+ENDC)
+        else:
+            print "{} : {} ({})".format(line[0], line[1], line[2])
     has_opt = True
 if(not has_opt):
     print_items(list_today)
