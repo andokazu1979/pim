@@ -42,6 +42,7 @@ parser = ArgumentParser()
 parser.add_argument('-f', '--future', action = 'store_true', help = 'show future schedule')
 parser.add_argument('-b', '--backward', action = 'store_true', help = 'show backward schedule')
 parser.add_argument('-p', '--project', action = 'store_true', help = 'show project list')
+parser.add_argument('-a', '--add', action = 'store_true', help = 'add schedule')
 args = parser.parse_args()
 
 now = datetime.datetime.now()
@@ -105,6 +106,14 @@ if(args.project):
             print "{} : {} ({})".format(line[0], line[1], RED+line[2]+ENDC)
         else:
             print "{} : {} ({})".format(line[0], line[1], line[2])
+    has_opt = True
+if(args.add):
+    add_start = raw_input("start date -> ")
+    add_end = raw_input("end date -> ")
+    add_title = raw_input("title -> ")
+    f = open(dir_script + '/sche.csv', "a")
+    f.write(add_start + ',' + add_end + ',' + add_title)
+    f.close()
     has_opt = True
 if(not has_opt):
     print_items(list_today)
