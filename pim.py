@@ -53,6 +53,8 @@ format_long = '%Y-%m-%d %H:%M'
 format_short = '%H:%M'
 
 dir_script = os.path.dirname(__file__)
+if(dir_script == ""):
+    dir_script = "."
 
 #print 'It\'s {}'.format(now.strftime(format_long))
 
