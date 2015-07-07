@@ -104,6 +104,8 @@ if(args.project):
             print "{} : {} ({})".format(line[0], line[1], GREEN+line[2]+ENDC)
         elif(line[2] == "RUN"):
             print "{} : {} ({})".format(line[0], line[1], RED+line[2]+ENDC)
+        elif(line[2] == "HOLD"):
+            print "{} : {} ({})".format(line[0], line[1], YELLOW+line[2]+ENDC)
         else:
             print "{} : {} ({})".format(line[0], line[1], line[2])
     has_opt = True
