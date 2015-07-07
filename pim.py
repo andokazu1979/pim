@@ -33,7 +33,7 @@ def format_timediff2(timediff):
     return "{} days".format(timediff.days)
 
 def format_timediff3(timediff):
-    return "started"
+    return RED + "started" + ENDC
 
 ############################################################
 # Main
