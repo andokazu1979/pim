@@ -22,7 +22,7 @@ UNDERLINE = '\033[4m'
 ############################################################
 def print_items(list):
     for item in list:
-        print '{} - {} ({}) : {}'.format(item[0], item[1], item[2], item[3])
+        print('{} - {} ({}) : {}'.format(item[0], item[1], item[2], item[3]))
 
 def format_timediff1(timediff):
     hour = timediff.seconds // 3600
@@ -56,7 +56,7 @@ dir_script = os.path.dirname(__file__)
 if(dir_script == ""):
     dir_script = "."
 
-#print 'It\'s {}'.format(now.strftime(format_long))
+#print('It\'s {}'.format(now.strftime(format_long)))
 
 list_today = []
 list_future = []
@@ -103,13 +103,13 @@ if(args.backward):
 if(args.project):
     for line in csv.reader(open(dir_script + '/proj.csv')):
         if(line[2] == "PEND"):
-            print "{} : {} ({})".format(line[0], line[1], GREEN+line[2]+ENDC)
+            print("{} : {} ({})".format(line[0], line[1], GREEN+line[2]+ENDC))
         elif(line[2] == "RUN"):
-            print "{} : {} ({})".format(line[0], line[1], RED+line[2]+ENDC)
+            print("{} : {} ({})".format(line[0], line[1], RED+line[2]+ENDC))
         elif(line[2] == "HOLD"):
-            print "{} : {} ({})".format(line[0], line[1], YELLOW+line[2]+ENDC)
+            print("{} : {} ({})".format(line[0], line[1], YELLOW+line[2]+ENDC))
         else:
-            print "{} : {} ({})".format(line[0], line[1], line[2])
+            print("{} : {} ({})".format(line[0], line[1], line[2]))
     has_opt = True
 if(args.add):
     add_start = raw_input("start date -> ")
