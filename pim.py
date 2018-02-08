@@ -23,6 +23,7 @@ UNDERLINE = '\033[4m'
 def print_items(list):
     for item in list:
         print('{} - {} ({}) : {}'.format(item[0], item[1], item[2], item[3]))
+        # print('{0} - {1} :{4:<40} ({2}) : {3}'.format(item[0], item[1], item[2], item[3], item[4]))
 
 def format_timediff1(timediff):
     hour = timediff.seconds // 3600
@@ -66,6 +67,14 @@ for line in csv.reader(open(dir_script + '/sche.csv')):
     datetime_end = datetime. datetime.strptime(line[1], format_long)
     datetime_diff = datetime_sta - now
     name = line[2]
+    delta1 = datetime_sta - datetime.datetime(now.year, now.month, now.day)
+    delta2 = datetime_end - datetime_sta
+    gantt = ''
+    for i in range(delta1.days):
+        gantt += ' '
+    for i in range(delta2.days + 1):
+        gantt += '*'
+
     # append "Today" list
     if(now_date <= datetime_sta.date() and 
             datetime_end.date() < tomo_date): # if today
