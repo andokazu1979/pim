@@ -112,9 +112,9 @@ if(args.project):
             print("{} : {} ({})".format(line[0], line[1], line[2]))
     has_opt = True
 if(args.add):
-    add_start = raw_input("start date -> ")
-    add_end = raw_input("end date -> ")
-    add_title = raw_input("title -> ")
+    add_start = input("start date -> ")
+    add_end = input("end date -> ")
+    add_title = input("title -> ")
     f = open(dir_script + '/sche.csv', "a")
     f.write(add_start + ',' + add_end + ',' + add_title)
     f.close()
