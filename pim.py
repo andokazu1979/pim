@@ -115,15 +115,15 @@ if args.backward:
     print_items(list_backward)
     has_opt = True
 if args.project:
-    for line in csv.reader(open(dir_script + '/proj.csv')):
+    for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
         if line[2] == "PEND":
-            print("{} : {} ({})".format(line[0], line[1], GREEN + line[2] + ENDC))
+            print("[{}] {} : {} ({})".format(index + 1, line[0], line[1], GREEN + line[2] + ENDC))
         elif line[2] == "RUN":
-            print("{} : {} ({})".format(line[0], line[1], RED + line[2] + ENDC))
+            print("[{}] {} : {} ({})".format(index + 1, line[0], line[1], RED + line[2] + ENDC))
         elif line[2] == "HOLD":
-            print("{} : {} ({})".format(line[0], line[1], YELLOW + line[2] + ENDC))
+            print("[{}] {} : {} ({})".format(index + 1, line[0], line[1], YELLOW + line[2] + ENDC))
         else:
-            print("{} : {} ({})".format(line[0], line[1], line[2]))
+            print("[{}] {} : {} ({})".format(index + 1, line[0], line[1], line[2]))
     has_opt = True
 if args.add:
     add_start = input("start date -> ")
