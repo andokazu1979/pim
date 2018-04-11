@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import csv
 import datetime
@@ -128,9 +128,12 @@ if args.project:
 if args.add:
     add_start = input("start date -> ")
     add_end = input("end date -> ")
+    if add_start == "" and add_end == "":
+        add_start = now
+        add_end = now + datetime.timedelta(hours=1)
     add_title = input("title -> ")
     f = open(dir_script + '/sche.csv', "a")
-    f.write(add_start + ',' + add_end + ',' + add_title)
+    f.write(add_start.strftime("%Y-%m-%d %H:%M") + ',' + add_end.strftime("%Y-%m-%d %H:%M") + ',' + add_title + "\n")
     f.close()
     has_opt = True
 if not has_opt:
