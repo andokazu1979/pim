@@ -122,6 +122,8 @@ if args.project:
             print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], RED + line[3] + ENDC))
         elif line[3] == "HOLD":
             print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
+        elif line[3] == "FIN":
+            pass
         else:
             print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], line[3]))
     has_opt = True
