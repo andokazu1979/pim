@@ -8,14 +8,23 @@ from argparse import ArgumentParser
 ############################################################
 # Color (ANSI escape sequence)
 ############################################################
-PURPLE = '\033[95m'
-OKBLUE = '\033[94m'
-GREEN = '\033[92m'
-YELLOW = '\033[93m'
-RED = '\033[91m'
-ENDC = '\033[0m'
-BOLD = '\033[1m'
-UNDERLINE = '\033[4m'
+ENDC           = '\033[0m'
+BOLD           = '\033[1m'
+UNDERLINE      = '\033[4m'
+
+RED            = '\033[91m'
+GREEN          = '\033[32m'
+YELLOW         = '\033[33m'
+BLUE           = '\033[34m'
+MAGENTA        = '\033[35m'
+CYAN           = '\033[36m'
+
+BRIGHT_RED     = '\033[91m'
+BRIGHT_GREEN   = '\033[92m'
+BRIGHT_YELLOW  = '\033[93m'
+BRIGHT_BLUE    = '\033[94m'
+BRIGHT_MAGENTA = '\033[95m'
+BRIGHT_CYAN    = '\033[96m'
 
 
 ############################################################
@@ -116,12 +125,12 @@ if args.backward:
     has_opt = True
 if args.project:
     for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
-        if line[3] == "PEND":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], GREEN + line[3] + ENDC))
+        if line[3] == "QUE":
+            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
         elif line[3] == "RUN":
             print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], RED + line[3] + ENDC))
-        elif line[3] == "HOLD":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
+        elif line[3] == "HLD":
+            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], GREEN + line[3] + ENDC))
         elif line[3] == "FIN":
             pass
         else:
