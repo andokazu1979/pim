@@ -126,11 +126,13 @@ if args.backward:
 if args.project:
     for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
         if line[3] == "QUE":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
+            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], GREEN + line[3] + ENDC))
         elif line[3] == "RUN":
             print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], RED + line[3] + ENDC))
-        elif line[3] == "HLD":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], GREEN + line[3] + ENDC))
+        elif line[3] == "WAIT":
+            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
+        elif line[3] == "HOLD":
+            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], BLUE + line[3] + ENDC))
         elif line[3] == "FIN":
             pass
         else:
