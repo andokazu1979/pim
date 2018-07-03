@@ -129,9 +129,9 @@ lst_queue = []
 str_run = ""
 for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
     if line[3] == "QUE":
-        lst_queue.append(["[{}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])])
+        lst_queue.append(["[{:4d}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])])
     elif line[3] == "RUN":
-        str_run = ["[{}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])]
+        str_run = ["[{:4d}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])]
 lst_queue.reverse()
 lst_queue.sort(key=lambda x: x[1])
 # print(lst_queue)
@@ -156,17 +156,17 @@ if args.backward:
 if args.project:
     for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
         if line[3] == "QUE":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], GREEN + line[3] + ENDC))
+            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], GREEN + line[3] + ENDC))
         elif line[3] == "RUN":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], RED + line[3] + ENDC))
+            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], RED + line[3] + ENDC))
         elif line[3] == "WAIT":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
+            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
         elif line[3] == "HOLD":
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], BLUE + line[3] + ENDC))
+            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], BLUE + line[3] + ENDC))
         elif line[3] == "FIN":
             pass
         else:
-            print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], line[3]))
+            print("[{:5d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], line[3]))
     has_opt = True
 if args.queue:
     i = 0
