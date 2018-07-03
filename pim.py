@@ -129,9 +129,9 @@ lst_queue = []
 str_run = ""
 for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
     if line[3] == "QUE":
-        lst_queue.append(["{} : {} : {}".format(line[0], line[1], line[2]), int(line[4])])
+        lst_queue.append(["[{}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])])
     elif line[3] == "RUN":
-        str_run = ["{} : {} : {}".format(line[0], line[1], line[2]), int(line[4])]
+        str_run = ["[{}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])]
 lst_queue.reverse()
 lst_queue.sort(key=lambda x: x[1])
 # print(lst_queue)
