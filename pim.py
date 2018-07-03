@@ -49,6 +49,8 @@ def format_timediff2(timediff):
 def format_timediff3(timediff):
     return RED + "started" + ENDC
 
+def print_col(str_, color):
+    print(color + str_ + ENDC)
 
 ############################################################
 # Main
@@ -58,6 +60,7 @@ parser.add_argument('-f', '--future', action='store_true', help='show future sch
 parser.add_argument('-b', '--backward', action='store_true', help='show backward schedule')
 parser.add_argument('-p', '--project', action='store_true', help='show project list')
 parser.add_argument('-a', '--add', action='store_true', help='add schedule')
+parser.add_argument('-q', '--queue', action='store_true', help='show job queue')
 args = parser.parse_args()
 
 now = datetime.datetime.now()
@@ -73,6 +76,9 @@ if dir_script == "":
 
 # print('It\'s {}'.format(now.strftime(format_long)))
 
+#-----------------------------------------------------------
+# Read schedule file
+#-----------------------------------------------------------
 list_today = []
 list_future = []
 list_backward = []
@@ -116,6 +122,30 @@ for line in csv.reader(open(dir_script + '/sche.csv')):
                               format_timediff2(datetime_diff),
                               name])
 
+#-----------------------------------------------------------
+# Read project file
+#-----------------------------------------------------------
+lst_queue = []
+str_run = ""
+for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
+    if line[3] == "QUE":
+        lst_queue.append(["{} : {} : {}".format(line[0], line[1], line[2]), int(line[4])])
+    elif line[3] == "RUN":
+        str_run = ["{} : {} : {}".format(line[0], line[1], line[2]), int(line[4])]
+lst_queue.reverse()
+lst_queue.sort(key=lambda x: x[1])
+# print(lst_queue)
+
+#-----------------------------------------------------------
+# Read time table file
+#-----------------------------------------------------------
+lst_ttable = []
+for line in csv.reader(open(dir_script + '/ttable.csv')):
+    lst_ttable.append(line)
+
+#-----------------------------------------------------------
+# Show result
+#-----------------------------------------------------------
 has_opt = False
 if args.future:
     print_items(list_future)
@@ -138,6 +168,34 @@ if args.project:
         else:
             print("[{}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], line[3]))
     has_opt = True
+if args.queue:
+    i = 0
+    for titem in lst_ttable:
+        dt_tmp1 = datetime.datetime(now.year, now.month, now.day, int(titem[0].split(":")[0]), int(titem[0].split(":")[1]))
+        dt_tmp2 = datetime.datetime(now.year, now.month, now.day, int(titem[1].split(":")[0]), int(titem[1].split(":")[1]))
+        if now < dt_tmp2: # Show term which is not finished.
+            if titem[2] != "":
+                lst_tmp = []
+                while len(lst_queue) != 0:
+                    qitem = lst_queue.pop()
+                    if titem[2] in qitem[0].split('：')[0]:
+                        # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
+                        print("{} - {}: {}".format(titem[0], titem[1], qitem[0]))
+                        break
+                    lst_tmp.append(qitem)
+                lst_tmp.reverse()
+                lst_queue = lst_queue + lst_tmp
+            else:
+                qitem = lst_queue.pop()
+                # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
+                print("{} - {}: {}".format(titem[0], titem[1], qitem[0]))
+            # if dt_tmp1 <= now and now < dt_tmp2:
+                # if str_run != "":
+                    # print("{} - {}: {}".format(titem[0], titem[1], str_run[0]))
+            # elif now <= dt_tmp1:
+                # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
+                # i += 1
+            i += 1
 if args.add:
     add_start = input("start date -> ")
     add_end = input("end date -> ")
