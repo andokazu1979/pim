@@ -154,19 +154,20 @@ if args.backward:
     print_items(list_backward)
     has_opt = True
 if args.project:
+    print("{:3} {:3} {:3} {}".format(UNDERLINE + 'IND' + ENDC, UNDERLINE + 'PRI' + ENDC, UNDERLINE + 'STA' + ENDC, UNDERLINE + 'NAME' + ENDC))
     for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
         if line[3] == "QUE":
-            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], GREEN + line[3] + ENDC))
+            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), GREEN  + line[3] + ENDC, line[0], line[1], line[2]))
         elif line[3] == "RUN":
-            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], RED + line[3] + ENDC))
-        elif line[3] == "WAIT":
-            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], YELLOW + line[3] + ENDC))
-        elif line[3] == "HOLD":
-            print("[{:4d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], BLUE + line[3] + ENDC))
+            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), RED    + line[3] + ENDC, line[0], line[1], line[2]))
+        elif line[3] == "PEN":
+            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), YELLOW + line[3] + ENDC, line[0], line[1], line[2]))
+        elif line[3] == "HLD":
+            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), BLUE   + line[3] + ENDC, line[0], line[1], line[2]))
         elif line[3] == "FIN":
             pass
         else:
-            print("[{:5d}] {} : {} : {} ({})".format(index + 1, line[0], line[1], line[2], line[3]))
+            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), line[3]                , line[0], line[1], line[2]))
     has_opt = True
 if args.queue:
     i = 0
