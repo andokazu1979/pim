@@ -129,9 +129,9 @@ lst_queue = []
 str_run = ""
 for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
     if line[3] == "QUE":
-        lst_queue.append(["[{:4d}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])])
+        lst_queue.append(["{:3d} {:3} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])])
     elif line[3] == "RUN":
-        str_run = ["[{:4d}] {} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])]
+        str_run = ["{:3d} {:3} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])]
 lst_queue.reverse()
 lst_queue.sort(key=lambda x: x[1])
 # print(lst_queue)
@@ -171,6 +171,7 @@ if args.project:
     has_opt = True
 if args.queue:
     i = 0
+    print("{:4} {:3} {:}".format(UNDERLINE + 'TIME' + ENDC + ' ' * 9, UNDERLINE + 'IND' + ENDC, UNDERLINE + 'NAME' + ENDC))
     for titem in lst_ttable:
         dt_tmp1 = datetime.datetime(now.year, now.month, now.day, int(titem[0].split(":")[0]), int(titem[0].split(":")[1]))
         dt_tmp2 = datetime.datetime(now.year, now.month, now.day, int(titem[1].split(":")[0]), int(titem[1].split(":")[1]))
@@ -181,7 +182,7 @@ if args.queue:
                     qitem = lst_queue.pop()
                     if titem[2] in qitem[0].split('：')[0]:
                         # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
-                        print("{} - {}: {}".format(titem[0], titem[1], qitem[0]))
+                        print("{} - {} {}".format(titem[0], titem[1], qitem[0]))
                         break
                     lst_tmp.append(qitem)
                 lst_tmp.reverse()
@@ -189,7 +190,7 @@ if args.queue:
             else:
                 qitem = lst_queue.pop()
                 # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
-                print("{} - {}: {}".format(titem[0], titem[1], qitem[0]))
+                print("{} - {} {}".format(titem[0], titem[1], qitem[0]))
             # if dt_tmp1 <= now and now < dt_tmp2:
                 # if str_run != "":
                     # print("{} - {}: {}".format(titem[0], titem[1], str_run[0]))
