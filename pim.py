@@ -154,7 +154,7 @@ if args.backward:
     print_items(list_backward)
     has_opt = True
 if args.project:
-    print("{:3} {:3} {:3} {}".format(UNDERLINE + 'IND' + ENDC, UNDERLINE + 'PRI' + ENDC, UNDERLINE + 'STA' + ENDC, UNDERLINE + 'NAME' + ENDC))
+    print("{:3} {:3} {:3} {}".format(UNDERLINE + 'IND' + ENDC, UNDERLINE + 'PRI' + ENDC, UNDERLINE + 'STA' + ENDC, UNDERLINE + 'TASK' + ENDC))
     for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
         if line[3] == "QUE":
             print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), GREEN  + line[3] + ENDC, line[0], line[1], line[2]))
@@ -171,7 +171,7 @@ if args.project:
     has_opt = True
 if args.queue:
     i = 0
-    print("{:4} {:3} {:}".format(UNDERLINE + 'TIME' + ENDC + ' ' * 9, UNDERLINE + 'IND' + ENDC, UNDERLINE + 'NAME' + ENDC))
+    print("{:4} {:3} {:}".format(UNDERLINE + 'TIME' + ENDC + ' ' * 9, UNDERLINE + 'IND' + ENDC, UNDERLINE + 'TASK' + ENDC))
     for titem in lst_ttable:
         dt_tmp1 = datetime.datetime(now.year, now.month, now.day, int(titem[0].split(":")[0]), int(titem[0].split(":")[1]))
         dt_tmp2 = datetime.datetime(now.year, now.month, now.day, int(titem[1].split(":")[0]), int(titem[1].split(":")[1]))
