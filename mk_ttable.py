@@ -12,8 +12,7 @@ tmp = time_sta.split(':')
 hour = int(tmp[0])
 minute = int(tmp[1])
 dt = datetime.datetime(dt_now.year, dt_now.month, dt_now.day,  hour, minute)
-# tdelta_rest_in_sec = 750
-tdelta_rest_in_sec = 600
+tdelta_rest_in_sec = 0
 
 while dt < datetime.datetime(dt_now.year, dt_now.month, dt_now.day, 20, 30):
     dt2 = dt + datetime.timedelta(hours=1)
