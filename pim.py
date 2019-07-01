@@ -4,6 +4,7 @@ import csv
 import datetime
 import os
 from argparse import ArgumentParser
+from os import system as sh
 
 ############################################################
 # Color (ANSI escape sequence)
@@ -61,6 +62,7 @@ parser.add_argument('-b', '--backward', action='store_true', help='show backward
 parser.add_argument('-p', '--project', action='store_true', help='show project list')
 parser.add_argument('-a', '--add', action='store_true', help='add schedule')
 parser.add_argument('-q', '--queue', action='store_true', help='show job queue')
+parser.add_argument('-e', '--edit', action='store_true', help='edit project file')
 args = parser.parse_args()
 
 now = datetime.datetime.now()
@@ -146,68 +148,76 @@ for line in csv.reader(open(dir_script + '/ttable.csv')):
 #-----------------------------------------------------------
 # Show result
 #-----------------------------------------------------------
-has_opt = False
-if args.future:
-    print_items(list_future)
-    has_opt = True
-if args.backward:
-    print_items(list_backward)
-    has_opt = True
-if args.project:
-    print("{:3} {:3} {:3} {}".format(UNDERLINE + 'IND' + ENDC, UNDERLINE + 'PRI' + ENDC, UNDERLINE + 'STA' + ENDC, UNDERLINE + 'TASK' + ENDC))
-    for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
-        if line[3] == "QUE":
-            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), GREEN  + line[3] + ENDC, line[0], line[1], line[2]))
-        elif line[3] == "RUN":
-            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), RED    + line[3] + ENDC, line[0], line[1], line[2]))
-        elif line[3] == "PEN":
-            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), YELLOW + line[3] + ENDC, line[0], line[1], line[2]))
-        elif line[3] == "HLD":
-            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), BLUE   + line[3] + ENDC, line[0], line[1], line[2]))
-        elif line[3] == "FIN":
-            pass
-        else:
-            print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), line[3]                , line[0], line[1], line[2]))
-    has_opt = True
-if args.queue:
-    i = 0
-    print("{:4} {:3} {:}".format(UNDERLINE + 'TIME' + ENDC + ' ' * 9, UNDERLINE + 'IND' + ENDC, UNDERLINE + 'TASK' + ENDC))
-    for titem in lst_ttable:
-        dt_tmp1 = datetime.datetime(now.year, now.month, now.day, int(titem[0].split(":")[0]), int(titem[0].split(":")[1]))
-        dt_tmp2 = datetime.datetime(now.year, now.month, now.day, int(titem[1].split(":")[0]), int(titem[1].split(":")[1]))
-        if now < dt_tmp2: # Show term which is not finished.
-            if titem[2] != "":
-                lst_tmp = []
-                while len(lst_queue) != 0:
-                    qitem = lst_queue.pop()
-                    if titem[2] in qitem[0].split('：')[0]:
-                        # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
-                        print("{} - {} {}".format(titem[0], titem[1], qitem[0]))
-                        break
-                    lst_tmp.append(qitem)
-                lst_tmp.reverse()
-                lst_queue = lst_queue + lst_tmp
+try:
+    has_opt = False
+    if args.future:
+        print_items(list_future)
+        has_opt = True
+    if args.backward:
+        print_items(list_backward)
+        has_opt = True
+    if args.project:
+        print("{:3} {:3} {:3} {}".format(UNDERLINE + 'IND' + ENDC, UNDERLINE + 'PRI' + ENDC, UNDERLINE + 'STA' + ENDC, UNDERLINE + 'TASK' + ENDC))
+        for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
+            if line[3] == "QUE":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), GREEN  + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "RUN":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), RED    + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "PEN":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), YELLOW + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "HLD":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), BLUE   + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "FIN":
+                pass
             else:
-                qitem = lst_queue.pop()
-                # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
-                print("{} - {} {}".format(titem[0], titem[1], qitem[0]))
-            # if dt_tmp1 <= now and now < dt_tmp2:
-                # if str_run != "":
-                    # print("{} - {}: {}".format(titem[0], titem[1], str_run[0]))
-            # elif now <= dt_tmp1:
-                # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
-                # i += 1
-            i += 1
-if args.add:
-    add_start = input("start date -> ")
-    add_end = input("end date -> ")
-    if add_start == "" and add_end == "":
-        add_start = now
-        add_end = now + datetime.timedelta(hours=1)
-    add_title = input("title -> ")
-    f = open(dir_script + '/sche.csv', "a")
-    f.write(add_start.strftime("%Y-%m-%d %H:%M") + ',' + add_end.strftime("%Y-%m-%d %H:%M") + ',' + add_title + "\n")
-    f.close()
-    has_opt = True
-if not has_opt:
-    print_items(list_today)
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), line[3]                , line[0], line[1], line[2]))
+        has_opt = True
+    if args.queue:
+        i = 0
+        print("{:4} {:3} {:}".format(UNDERLINE + 'TIME' + ENDC + ' ' * 9, UNDERLINE + 'IND' + ENDC, UNDERLINE + 'TASK' + ENDC))
+        for titem in lst_ttable:
+            dt_tmp1 = datetime.datetime(now.year, now.month, now.day, int(titem[0].split(":")[0]), int(titem[0].split(":")[1]))
+            dt_tmp2 = datetime.datetime(now.year, now.month, now.day, int(titem[1].split(":")[0]), int(titem[1].split(":")[1]))
+            if now < dt_tmp2: # Show term which is not finished.
+                if titem[2] != "":
+                    lst_tmp = []
+                    while len(lst_queue) != 0:
+                        qitem = lst_queue.pop()
+                        if titem[2] in qitem[0].split('：')[0]:
+                            # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
+                            print("{} - {} {}".format(titem[0], titem[1], qitem[0]))
+                            break
+                        lst_tmp.append(qitem)
+                    lst_tmp.reverse()
+                    lst_queue = lst_queue + lst_tmp
+                else:
+                    qitem = lst_queue.pop()
+                    # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
+                    print("{} - {} {}".format(titem[0], titem[1], qitem[0]))
+                # if dt_tmp1 <= now and now < dt_tmp2:
+                    # if str_run != "":
+                        # print("{} - {}: {}".format(titem[0], titem[1], str_run[0]))
+                # elif now <= dt_tmp1:
+                    # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
+                    # i += 1
+                i += 1
+    if args.add:
+        add_start = input("start date -> ")
+        add_end = input("end date -> ")
+        if add_start == "" and add_end == "":
+            add_start = now
+            add_end = now + datetime.timedelta(hours=1)
+        add_title = input("title -> ")
+        f = open(dir_script + '/sche.csv', "a")
+        f.write(add_start.strftime("%Y-%m-%d %H:%M") + ',' + add_end.strftime("%Y-%m-%d %H:%M") + ',' + add_title + "\n")
+        f.close()
+        has_opt = True
+    if args.edit:
+        sh('vim $HOME/toolbox/pim/proj.csv $HOME/toolbox/pim/ttable.csv')
+        has_opt = True
+    if not has_opt:
+        print_items(list_today)
+except Exception as e:
+    print(RED + "*** Error occured in parsing csv file! ***" + ENDC)
+    print(e)
+    print(line)
