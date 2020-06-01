@@ -140,6 +140,15 @@ lst_queue = []
 str_run = ""
 for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
     if line[3] == "QUE":
+        if len(line) != 5:
+            if len(line) == 6:
+                i = 5
+            elif len(line) == 7:
+                i = 6
+            datetime_sta = datetime.datetime.strptime(line[5], format_ymd)
+            datetime_end = datetime.datetime.strptime(line[i], format_ymd) + datetime.timedelta(days=1)
+            if now < datetime_sta or datetime_end < now:
+                continue
         lst_queue.append(["{:3d} {:3} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])])
     elif line[3] == "RUN":
         str_run = ["{:3d} {:3} : {} : {}".format(index+1, line[0], line[1], line[2]), int(line[4])]
@@ -233,7 +242,10 @@ try:
                     print(cur_date.strftime('%Y-%m-%d ({})'.format(dow)), end=' ')
             for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
                 if line[3] != "FIN":
-                    if len(line) == 7:
+                    if len(line) == 6:
+                        datetime_sta = datetime.datetime.strptime(line[5], format_ymd)
+                        datetime_end = datetime.datetime.strptime(line[5], format_ymd)
+                    elif len(line) == 7:
                         datetime_sta = datetime.datetime.strptime(line[5], format_ymd)
                         datetime_end = datetime.datetime.strptime(line[6], format_ymd)
                     else:
