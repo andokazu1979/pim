@@ -7,6 +7,12 @@ from argparse import ArgumentParser
 from os import system as sh
 
 ############################################################
+# Parameter
+############################################################
+
+NDATES_GANTT = 20 # Number of dates to show in gannt chart
+
+############################################################
 # Color (ANSI escape sequence)
 ############################################################
 ENDC           = '\033[0m'
@@ -60,6 +66,7 @@ parser = ArgumentParser()
 parser.add_argument('-f', '--future', action='store_true', help='show future schedule')
 parser.add_argument('-b', '--backward', action='store_true', help='show backward schedule')
 parser.add_argument('-p', '--project', action='store_true', help='show project list')
+parser.add_argument('-g', '--gantt', action='store_true', help='show gantt chart')
 parser.add_argument('-a', '--add', action='store_true', help='add schedule')
 parser.add_argument('-q', '--queue', action='store_true', help='show job queue')
 parser.add_argument('-e', '--edit', action='store_true', help='edit project file')
@@ -67,10 +74,12 @@ args = parser.parse_args()
 
 now = datetime.datetime.now()
 now_date = now.date()
-tomo_date = now_date + datetime.timedelta(days=1)
+oneday = datetime.timedelta(days=1)
+tomo_date = now_date + oneday
 
 format_long = '%Y-%m-%d %H:%M'
 format_short = '%H:%M'
+format_ymd = '%Y-%m-%d'
 
 dir_script = os.path.dirname(__file__)
 if dir_script == "":
@@ -146,6 +155,22 @@ for line in csv.reader(open(dir_script + '/ttable.csv')):
     lst_ttable.append(line)
 
 #-----------------------------------------------------------
+# Read holiday file
+#-----------------------------------------------------------
+lst_holiday = []
+for index, line in enumerate(csv.reader(open(dir_script + '/syukujitsu.csv'))):
+    if index == 0:
+        continue
+    lst_holiday.append(datetime.datetime.strptime(line[0], "%Y/%m/%d").date())
+
+#-----------------------------------------------------------
+# Read nenkyu file
+#-----------------------------------------------------------
+lst_nenkyu = []
+for index, line in enumerate(csv.reader(open(dir_script + '/nenkyu.csv'))):
+    lst_nenkyu.append(datetime.datetime.strptime(line[0], "%Y/%m/%d").date())
+
+#-----------------------------------------------------------
 # Show result
 #-----------------------------------------------------------
 try:
@@ -171,6 +196,57 @@ try:
                 pass
             else:
                 print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), line[3]                , line[0], line[1], line[2]))
+        has_opt = True
+    if args.gantt:
+        print("{:3} {:3} {:3} {}".format(UNDERLINE + 'IND' + ENDC, UNDERLINE + 'PRI' + ENDC, UNDERLINE + 'STA' + ENDC, UNDERLINE + 'TASK' + ENDC))
+        for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
+            if line[3] == "QUE":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), GREEN  + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "RUN":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), RED    + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "PEN":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), YELLOW + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "HLD":
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), BLUE   + line[3] + ENDC, line[0], line[1], line[2]))
+            elif line[3] == "FIN":
+                pass
+            else:
+                print("{:3d} {:3d} {:3} {} : {} : {}".format(index + 1, int(line[4]), line[3]                , line[0], line[1], line[2]))
+        print('')
+        # print('           ', end='')
+        print('                 ', end='')
+        for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
+            if line[3] != "FIN":
+                print('{:2d}'.format(index+1), end=' ')
+        print('')
+        cur_date = now_date
+        for i in range(NDATES_GANTT):
+            dow = cur_date.strftime('%a')
+            if dow == 'Sat':
+                print(cur_date.strftime('%Y-%m-%d ({}{}{})'.format(CYAN, dow, ENDC)), end=' ')
+            elif dow == 'Sun':
+                print(cur_date.strftime('%Y-%m-%d ({}{}{})'.format(RED, dow, ENDC)), end=' ')
+            else:
+                if cur_date in lst_holiday or cur_date in lst_nenkyu:
+                    print(cur_date.strftime('%Y-%m-%d ({}{}{})'.format(RED, dow, ENDC)), end=' ')
+                else:
+                    print(cur_date.strftime('%Y-%m-%d ({})'.format(dow)), end=' ')
+            for index, line in enumerate(csv.reader(open(dir_script + '/proj.csv'))):
+                if line[3] != "FIN":
+                    if len(line) == 7:
+                        datetime_sta = datetime.datetime.strptime(line[5], format_ymd)
+                        datetime_end = datetime.datetime.strptime(line[6], format_ymd)
+                    else:
+                        datetime_sta = None
+                        datetime_end = None
+                    if datetime_sta is None:
+                        print('  ', end=' ')
+                    elif datetime_sta.date() <= cur_date and cur_date < datetime_end.date() + oneday:
+                        print(' *', end=' ')
+                    else:
+                        print('  ', end=' ')
+            cur_date = cur_date + oneday
+            print('')
         has_opt = True
     if args.queue:
         i = 0
@@ -201,12 +277,13 @@ try:
                     # print("{} - {}: {}".format(titem[0], titem[1], lst_queue[i][0]))
                     # i += 1
                 i += 1
+        has_opt = True
     if args.add:
         add_start = input("start date -> ")
         add_end = input("end date -> ")
         if add_start == "" and add_end == "":
             add_start = now
-            add_end = now + datetime.timedelta(hours=1)
+            add_end = now + oneday
         add_title = input("title -> ")
         f = open(dir_script + '/sche.csv', "a")
         f.write(add_start.strftime("%Y-%m-%d %H:%M") + ',' + add_end.strftime("%Y-%m-%d %H:%M") + ',' + add_title + "\n")
