@@ -302,7 +302,7 @@ try:
         f.close()
         has_opt = True
     if args.edit:
-        sh('vim $HOME/toolbox/pim/proj.csv $HOME/toolbox/pim/ttable.csv')
+        sh('vim {0}/proj.csv {0}/ttable.csv'.format(os.path.dirname(__file__)))
         has_opt = True
     if not has_opt:
         print_items(list_today)
